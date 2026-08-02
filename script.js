@@ -1,5 +1,5 @@
 // ============================================================
-// PEPEL – Shared JavaScript
+// PEPEL – Shared JavaScript (Complete)
 // ============================================================
 
 // ---------- BACKEND URL ----------
@@ -64,7 +64,12 @@ async function apiFetch(endpoint, options = {}) {
 
 // ---------- TOAST NOTIFICATIONS ----------
 function showToast(msg, type = 'info') {
+  // Remove any existing toast
+  const existing = document.querySelector('.toast-notification');
+  if (existing) existing.remove();
+
   const toast = document.createElement('div');
+  toast.className = 'toast-notification';
   toast.style.cssText = `
     position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
     background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#f97316'};
