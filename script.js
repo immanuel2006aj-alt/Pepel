@@ -3,7 +3,7 @@
 // ============================================================
 
 // Backend URL (replace when backend is live)
-const BACKEND_URL = 'https://your-backend.onrender.com';
+const BACKEND_URL = 'https://pepel-backend.onrender.com';
 
 // ---- Token Management ----
 function getToken() {
