@@ -31,50 +31,5 @@
   </div>
 
   <script src="script.js"></script>
-  <script>
-    document.getElementById('loginForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const workerId = document.getElementById('workerId').value.trim();
-      const password = document.getElementById('password').value;
-      const errorEl = document.getElementById('loginError');
-      errorEl.textContent = '';
-
-      if (!workerId || !password) {
-        errorEl.textContent = 'Please fill in all fields.';
-        return;
-      }
-
-      // --- SIMULATED LOGIN (remove when backend is live) ---
-      // This accepts any ID/password and stores a dummy token.
-      // When backend is ready, replace this block with the fetch call below.
-      // For now, we simulate success.
-      const token = 'dummy_token_' + Date.now();
-      setToken(token);
-      setWorkerId(workerId);
-      window.location.href = 'dashboard.html';
-      return;
-
-      // --- REAL BACKEND (uncomment when backend is deployed) ---
-      /*
-      try {
-        const res = await fetch(`${BACKEND_URL}/api/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ workerId, password })
-        });
-        const data = await res.json();
-        if (data.token) {
-          setToken(data.token);
-          setWorkerId(workerId);
-          window.location.href = 'dashboard.html';
-        } else {
-          errorEl.textContent = data.error || 'Invalid credentials';
-        }
-      } catch (err) {
-        errorEl.textContent = 'Network error. Please try again.';
-      }
-      */
-    });
-  </script>
 </body>
 </html>
