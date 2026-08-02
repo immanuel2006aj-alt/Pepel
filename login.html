@@ -33,9 +33,9 @@
   <script src="script.js"></script>
   <script>
     (function() {
-      // Ensure BACKEND_URL is defined
+      // Ensure BACKEND_URL is available
       if (typeof BACKEND_URL === 'undefined') {
-        // Fallback if script.js didn't load
+        // Fallback, but should be defined in script.js
         var BACKEND_URL = 'https://pepel-backend.onrender.com';
       }
 
@@ -62,9 +62,15 @@
           const data = await response.json();
 
           if (response.ok && data.token) {
-            // Save token and workerId
-            localStorage.setItem('pepel_token', data.token);
-            localStorage.setItem('pepel_worker_id', workerId);
+            // Save token and workerId (functions from script.js)
+            if (typeof setToken === 'function' && typeof setWorkerId === 'function') {
+              setToken(data.token);
+              setWorkerId(workerId);
+            } else {
+              // Fallback to localStorage directly
+              localStorage.setItem('pepel_token', data.token);
+              localStorage.setItem('pepel_worker_id', workerId);
+            }
             // Redirect to dashboard
             window.location.href = 'dashboard.html';
           } else {
@@ -72,7 +78,7 @@
           }
         } catch (err) {
           console.error('Login error:', err);
-          errorEl.textContent = 'Network error. Please check your internet connection.';
+          errorEl.textContent = 'Network error. Check your internet connection.';
         }
       });
     })();
