@@ -3,7 +3,7 @@
 // ============================================================
 
 // ---------- BACKEND URL ----------
-// Change this to your actual Render backend URL
+// Make sure this matches your Render backend URL
 const BACKEND_URL = 'https://pepel-backend.onrender.com';
 
 // ---------- TOKEN MANAGEMENT ----------
