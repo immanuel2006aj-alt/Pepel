@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact – Pepel</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <div class="logo">Pepel<span>.</span></div>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="login.html">Login</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="withdraw.html">Withdraw</a></li>
+        <li><a href="contact.html" class="active">Contact</a></li>
+      </ul>
+      <div class="menu-toggle" id="mobileMenu"><i class="fas fa-bars"></i></div>
+    </div>
+  </nav>
+
+  <div class="container" style="padding: 40px 0;">
+    <h2>Contact Us</h2>
+    <div class="card">
+      <p>If you have any questions or need support, reach out to us through any of these channels:</p>
+      <ul style="margin-top: 16px; list-style: none; font-size: 18px;">
+        <li style="margin-bottom: 12px;"><i class="fas fa-envelope" style="color:var(--primary); width: 30px;"></i> <a href="mailto:support@pepel.com">support@pepel.com</a></li>
+        <li style="margin-bottom: 12px;"><i class="fab fa-telegram" style="color:var(--primary); width: 30px;"></i> <a href="https://t.me/PepelBot">@PepelBot</a> (Telegram)</li>
+        <li style="margin-bottom: 12px;"><i class="fab fa-whatsapp" style="color:var(--primary); width: 30px;"></i> +91 98765 43210 (WhatsApp)</li>
+      </ul>
+      <p style="margin-top: 20px;">We usually reply within 2‑4 hours.</p>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 Pepel. Support: <a href="mailto:support@pepel.com">support@pepel.com</a></p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    document.getElementById('mobileMenu').addEventListener('click', function() {
+      document.getElementById('navLinks').classList.toggle('active');
+    });
+  </script>
+</body>
+</html>
