@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Withdraw – Pepel</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    .withdraw-header { display: flex; align-items: center; gap: 12px; margin-bottom: 30px; }
+    .withdraw-header i { font-size: 32px; color: var(--primary); }
+    .policy-list { list-style: none; padding: 0; }
+    .policy-list li { padding: 8px 0; border-bottom: 1px solid #f1f5f9; display: flex; gap: 12px; align-items: center; }
+    .policy-list li i { color: var(--primary); width: 24px; }
+    @media (max-width: 768px) {
+      .policy-list li { font-size: 14px; flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <div class="logo">Pepel<span>.</span></div>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="withdraw.html" class="active">Withdraw</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="#" id="logoutBtn" style="color: var(--primary);">Logout</a></li>
+      </ul>
+      <div class="menu-toggle" id="mobileMenu"><i class="fas fa-bars"></i></div>
+    </div>
+  </nav>
+
+  <div class="container" style="padding: 40px 0;">
+    <div class="withdraw-header">
+      <i class="fas fa-hand-holding-usd"></i>
+      <h2 style="margin:0;">Withdrawal Policy</h2>
+    </div>
+    <div class="card">
+      <h4>📋 How to withdraw</h4>
+      <p>Go to your Dashboard and click the "Withdraw" button. You'll be asked to enter the amount and choose your payment method.</p>
+      <ul class="policy-list" style="margin-top:20px;">
+        <li><i class="fas fa-dollar-sign"></i> <strong>Minimum amount:</strong> $10 (≈₹830)</li>
+        <li><i class="fas fa-clock"></i> <strong>Cooldown period:</strong> Once every 48 hours</li>
+        <li><i class="fas fa-hourglass-half"></i> <strong>Processing time:</strong> 24‑48 hours</li>
+        <li><i class="fas fa-coins"></i> <strong>Payment methods:</strong> USDT (BEP‑20) or INR (UPI)</li>
+      </ul>
+    </div>
+    <a href="dashboard.html" class="btn-primary">Go to Dashboard</a>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 Pepel. Support: <a href="mailto:support@pepel.com">support@pepel.com</a></p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    if (!requireAuth()) { /* redirects */ }
+    document.getElementById('logoutBtn').addEventListener('click', (e) => {
+      e.preventDefault();
+      clearToken();
+      window.location.href = 'login.html';
+    });
+    document.getElementById('mobileMenu').addEventListener('click', function() {
+      document.getElementById('navLinks').classList.toggle('active');
+    });
+  </script>
+</body>
+</html>
