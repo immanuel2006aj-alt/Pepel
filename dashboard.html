@@ -50,7 +50,7 @@
       box-shadow: var(--shadow);
       text-align: center;
     }
-    .task-area img { max-width: 100%; border-radius: 8px; margin-bottom: 16px; background: #e2e8f0; }
+    .task-area img { max-width: 100%; border-radius: 8px; margin-bottom: 16px; background: #e2e8f0; min-height: 120px; }
     .task-area input {
       width: 100%;
       padding: 14px 20px;
@@ -128,7 +128,7 @@
       </div>
 
       <div class="task-area">
-        <div id="taskImage"><img id="captchaImg" src="https://via.placeholder.com/400x150?text=Loading+task..." alt="Captcha"></div>
+        <div id="taskImage"><img id="captchaImg" src="" alt="Captcha" style="width:100%; height:auto; background:#e2e8f0;"></div>
         <input type="text" id="answerInput" placeholder="Type the text you see..." autofocus>
         <button class="btn-primary" id="submitBtn" style="width:100%;">Submit</button>
         <div class="feedback" id="feedback"></div>
@@ -151,23 +151,28 @@
 
   <script src="script.js"></script>
   <script>
+    // ---- PROTECT PAGE ----
     if (!requireAuth()) { /* redirects to login */ }
 
     const workerId = getWorkerId();
     document.getElementById('workerIdDisplay').textContent = workerId;
 
+    // ---- LOGOUT ----
     document.getElementById('logoutBtn').addEventListener('click', (e) => {
       e.preventDefault();
       clearToken();
       window.location.href = 'login.html';
     });
 
+    // ---- DASHBOARD STATE ----
     let balance = parseFloat(localStorage.getItem('pepel_balance_' + workerId)) || 0;
     let taskCount = parseInt(localStorage.getItem('pepel_taskCount_' + workerId)) || 0;
     let todayEarnings = parseFloat(localStorage.getItem('pepel_today_' + workerId)) || 0;
     let startTime = Date.now();
     let history = JSON.parse(localStorage.getItem('pepel_history_' + workerId)) || [];
+    let currentTaskId = null;
 
+    // ---- DOM REFS ----
     const balanceEl = document.getElementById('balanceDisplay');
     const captchaImg = document.getElementById('captchaImg');
     const answerInput = document.getElementById('answerInput');
@@ -179,6 +184,7 @@
     const historyList = document.getElementById('historyList');
     const notificationsContainer = document.getElementById('notificationsContainer');
 
+    // ---- UI UPDATE ----
     function updateUI() {
       balanceEl.textContent = '$' + balance.toFixed(2);
       taskCountEl.textContent = taskCount;
@@ -209,38 +215,77 @@
       `).join('');
     }
 
-    function fetchTask() {
-      const images = [
-        'https://via.placeholder.com/400x150?text=CAPTCHA+1',
-        'https://via.placeholder.com/400x150?text=CAPTCHA+2',
-        'https://via.placeholder.com/400x150?text=CAPTCHA+3'
-      ];
-      const random = images[Math.floor(Math.random() * images.length)];
-      captchaImg.src = random;
-      feedback.textContent = '';
-      feedback.className = '';
-      answerInput.value = '';
-      answerInput.focus();
+    // ---- FETCH TASK FROM BACKEND ----
+    async function fetchTask() {
+      try {
+        const response = await apiFetch('/api/task/next/' + workerId);
+        const data = await response.json();
+        if (data.image) {
+          captchaImg.src = data.image;
+          currentTaskId = data.taskId;
+        } else {
+          captchaImg.src = 'https://via.placeholder.com/400x150?text=No+task+available';
+        }
+        feedback.textContent = '';
+        feedback.className = '';
+        answerInput.value = '';
+        answerInput.focus();
+      } catch (error) {
+        console.error('Error fetching task:', error);
+        captchaImg.src = 'https://via.placeholder.com/400x150?text=Error+loading+task';
+        feedback.textContent = '⚠️ Cannot connect to server.';
+        feedback.className = 'error';
+      }
     }
 
-    function submitTask() {
+    // ---- SUBMIT SOLUTION ----
+    async function submitTask() {
       const solution = answerInput.value.trim();
       if (!solution) {
         feedback.textContent = 'Please type the text you see.';
         feedback.className = 'error';
         return;
       }
-      balance += 0.03;
-      taskCount++;
-      todayEarnings += 0.03;
-      history.push({ type: 'Earned', amount: '+$0.03', date: new Date().toISOString() });
-      updateUI();
-      feedback.textContent = '✅ Correct! +$0.03';
-      feedback.className = 'success';
-      addNotification('You earned +$0.03! Balance: $' + balance.toFixed(2));
-      setTimeout(fetchTask, 500);
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+
+      try {
+        const response = await apiFetch('/api/task/submit', {
+          method: 'POST',
+          body: JSON.stringify({ workerId, solution, taskId: currentTaskId })
+        });
+        const data = await response.json();
+
+        if (data.success) {
+          balance = data.newBalance;
+          balanceEl.textContent = '$' + balance.toFixed(2);
+          taskCount++;
+          taskCountEl.textContent = taskCount;
+          todayEarnings += 0.03;
+          localStorage.setItem('pepel_today_' + workerId, todayEarnings);
+          todayEarningsEl.textContent = '$' + todayEarnings.toFixed(2);
+          feedback.textContent = '✅ Correct! +$0.03';
+          feedback.className = 'success';
+          history.push({ type: 'Earned', amount: '+$0.03', date: new Date().toISOString() });
+          updateUI();
+          addNotification('You earned +$0.03! Balance: $' + balance.toFixed(2));
+          fetchTask();
+        } else {
+          feedback.textContent = '❌ Incorrect. Try again.';
+          feedback.className = 'error';
+        }
+      } catch (error) {
+        console.error('Submit error:', error);
+        feedback.textContent = '⚠️ Submission failed. Try again.';
+        feedback.className = 'error';
+      }
+
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit';
     }
 
+    // ---- NOTIFICATIONS ----
     function addNotification(msg) {
       const notif = document.createElement('div');
       notif.className = 'notification';
@@ -251,6 +296,7 @@
       }
     }
 
+    // ---- WITHDRAWAL ----
     function requestWithdrawal() {
       if (balance < 10) {
         alert('Minimum withdrawal is $10. Keep working!');
@@ -280,10 +326,12 @@
       alert('✅ Withdrawal requested! You\'ll receive within 24‑48 hours.');
     }
 
+    // ---- EVENT LISTENERS ----
     submitBtn.addEventListener('click', submitTask);
     answerInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') submitTask(); });
     document.getElementById('withdrawBtn').addEventListener('click', requestWithdrawal);
 
+    // ---- INIT ----
     updateUI();
     fetchTask();
     addNotification('Welcome to Pepel! Start solving tasks to earn.');
