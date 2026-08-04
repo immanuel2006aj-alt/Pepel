@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard – Pepel</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    .dashboard-container { padding: 30px 0 20px; }
+    .greeting { font-size: 22px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+    .worker-id-badge {
+      background: #f1f5f9;
+      padding: 4px 16px;
+      border-radius: 40px;
+      font-size: 14px;
+      color: #475569;
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+    .balance-card {
+      background: linear-gradient(145deg, #f97316, #ea580c);
+      color: white;
+      border-radius: var(--radius);
+      padding: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .balance-card .amount { font-size: 36px; font-weight: 700; }
+    .balance-card .label { font-size: 14px; opacity: 0.8; }
+    .balance-card .btn-primary { background: white; color: #f97316; border: none; padding: 10px 24px; border-radius: 40px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .balance-card .btn-primary:hover { background: #f1f5f9; }
+    .card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .task-area {
+      background: white;
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+    .task-area img { max-width: 100%; border-radius: 8px; margin-bottom: 16px; background: #e2e8f0; }
+    .task-area input {
+      width: 100%;
+      padding: 14px 20px;
+      border: 2px solid #e2e8f0;
+      border-radius: 40px;
+      font-size: 16px;
+      margin: 12px 0;
+    }
+    .task-area input:focus { border-color: var(--primary); outline: none; }
+    .feedback { min-height: 28px; font-weight: 500; margin-top: 8px; }
+    .success { color: #10b981; }
+    .error { color: #ef4444; }
+    .live-counter { font-size: 18px; font-weight: 600; color: var(--primary); margin-top: 4px; }
+    .history-list { max-height: 300px; overflow-y: auto; }
+    .history-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
+    .history-item .date { font-size: 13px; color: #94a3b8; }
+    .history-item .credit { color: #10b981; font-weight: 600; }
+    .history-item .debit { color: #ef4444; font-weight: 600; }
+    .notification {
+      background: #fef3c7;
+      border-left: 4px solid var(--primary);
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+    @media (max-width: 768px) {
+      .dashboard-grid { grid-template-columns: 1fr; }
+      .balance-card { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .greeting { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <div class="logo">Pepel<span>.</span></div>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="dashboard.html" class="active">Dashboard</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="withdraw.html">Withdraw</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="#" id="logoutBtn" style="color: var(--primary);">Logout</a></li>
+      </ul>
+      <div class="menu-toggle" id="mobileMenu"><i class="fas fa-bars"></i></div>
+    </div>
+  </nav>
+
+  <div class="container dashboard-container">
+    <div id="authCheck"></div>
+    <div class="greeting">👋 Welcome back</div>
+    <div class="worker-id-badge"><i class="fas fa-id-badge"></i> ID: <strong id="workerIdDisplay"></strong></div>
+
+    <div class="dashboard-grid">
+      <div>
+        <div class="balance-card">
+          <div>
+            <div class="label">💰 Balance</div>
+            <div class="amount" id="balanceDisplay">$0.00</div>
+          </div>
+          <button class="btn-primary" id="withdrawBtn">Withdraw</button>
+        </div>
+        <div class="card">
+          <h4>📈 Live Earnings</h4>
+          <div class="live-counter" id="liveCounter">$0.00 / hour</div>
+          <div style="margin-top:12px; font-size:14px; color:var(--text-muted);">
+            Today: <span id="todayEarnings">$0.00</span> &bull; Tasks: <span id="taskCount">0</span>
+          </div>
+        </div>
+        <div class="card">
+          <h4>🔔 Notifications</h4>
+          <div id="notificationsContainer"><p style="color:var(--text-muted);">No new notifications</p></div>
+        </div>
+      </div>
+
+      <div class="task-area">
+        <div id="taskImage"><img id="captchaImg" src="https://via.placeholder.com/400x150?text=Loading+task..." alt="Captcha"></div>
+        <input type="text" id="answerInput" placeholder="Type the text you see..." autofocus>
+        <button class="btn-primary" id="submitBtn" style="width:100%;">Submit</button>
+        <div class="feedback" id="feedback"></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:24px;">
+      <h4>📜 Transaction History</h4>
+      <div class="history-list" id="historyList">
+        <p style="color:var(--text-muted);">No transactions yet.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 Pepel. Support: <a href="mailto:support@pepel.com">support@pepel.com</a></p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    if (!requireAuth()) { /* redirects to login */ }
+
+    const workerId = getWorkerId();
+    document.getElementById('workerIdDisplay').textContent = workerId;
+
+    document.getElementById('logoutBtn').addEventListener('click', (e) => {
+      e.preventDefault();
+      clearToken();
+      window.location.href = 'login.html';
+    });
+
+    let balance = parseFloat(localStorage.getItem('pepel_balance_' + workerId)) || 0;
+    let taskCount = parseInt(localStorage.getItem('pepel_taskCount_' + workerId)) || 0;
+    let todayEarnings = parseFloat(localStorage.getItem('pepel_today_' + workerId)) || 0;
+    let startTime = Date.now();
+    let history = JSON.parse(localStorage.getItem('pepel_history_' + workerId)) || [];
+
+    const balanceEl = document.getElementById('balanceDisplay');
+    const captchaImg = document.getElementById('captchaImg');
+    const answerInput = document.getElementById('answerInput');
+    const submitBtn = document.getElementById('submitBtn');
+    const feedback = document.getElementById('feedback');
+    const taskCountEl = document.getElementById('taskCount');
+    const todayEarningsEl = document.getElementById('todayEarnings');
+    const liveCounter = document.getElementById('liveCounter');
+    const historyList = document.getElementById('historyList');
+    const notificationsContainer = document.getElementById('notificationsContainer');
+
+    function updateUI() {
+      balanceEl.textContent = '$' + balance.toFixed(2);
+      taskCountEl.textContent = taskCount;
+      todayEarningsEl.textContent = '$' + todayEarnings.toFixed(2);
+      const hours = (Date.now() - startTime) / 3600000;
+      if (hours > 0) {
+        const rate = todayEarnings / hours;
+        liveCounter.textContent = '$' + rate.toFixed(2) + ' / hour';
+      }
+      localStorage.setItem('pepel_balance_' + workerId, balance);
+      localStorage.setItem('pepel_taskCount_' + workerId, taskCount);
+      localStorage.setItem('pepel_today_' + workerId, todayEarnings);
+      localStorage.setItem('pepel_history_' + workerId, JSON.stringify(history));
+      renderHistory();
+    }
+
+    function renderHistory() {
+      if (history.length === 0) {
+        historyList.innerHTML = '<p style="color:var(--text-muted);">No transactions yet.</p>';
+        return;
+      }
+      historyList.innerHTML = history.slice().reverse().map(item => `
+        <div class="history-item">
+          <span>${item.type}</span>
+          <span class="${item.type === 'Earned' ? 'credit' : 'debit'}">${item.amount}</span>
+          <span class="date">${formatDate(item.date)}</span>
+        </div>
+      `).join('');
+    }
+
+    function fetchTask() {
+      const images = [
+        'https://via.placeholder.com/400x150?text=CAPTCHA+1',
+        'https://via.placeholder.com/400x150?text=CAPTCHA+2',
+        'https://via.placeholder.com/400x150?text=CAPTCHA+3'
+      ];
+      const random = images[Math.floor(Math.random() * images.length)];
+      captchaImg.src = random;
+      feedback.textContent = '';
+      feedback.className = '';
+      answerInput.value = '';
+      answerInput.focus();
+    }
+
+    function submitTask() {
+      const solution = answerInput.value.trim();
+      if (!solution) {
+        feedback.textContent = 'Please type the text you see.';
+        feedback.className = 'error';
+        return;
+      }
+      balance += 0.03;
+      taskCount++;
+      todayEarnings += 0.03;
+      history.push({ type: 'Earned', amount: '+$0.03', date: new Date().toISOString() });
+      updateUI();
+      feedback.textContent = '✅ Correct! +$0.03';
+      feedback.className = 'success';
+      addNotification('You earned +$0.03! Balance: $' + balance.toFixed(2));
+      setTimeout(fetchTask, 500);
+    }
+
+    function addNotification(msg) {
+      const notif = document.createElement('div');
+      notif.className = 'notification';
+      notif.textContent = msg;
+      notificationsContainer.prepend(notif);
+      while (notificationsContainer.children.length > 5) {
+        notificationsContainer.removeChild(notificationsContainer.lastChild);
+      }
+    }
+
+    function requestWithdrawal() {
+      if (balance < 10) {
+        alert('Minimum withdrawal is $10. Keep working!');
+        return;
+      }
+      const amount = prompt('Enter amount to withdraw (min $10, max $' + balance.toFixed(2) + '):');
+      if (!amount) return;
+      const amt = parseFloat(amount);
+      if (isNaN(amt) || amt < 10 || amt > balance) {
+        alert('Invalid amount.');
+        return;
+      }
+      const lastWithdraw = localStorage.getItem('pepel_last_withdraw_' + workerId);
+      if (lastWithdraw) {
+        const diff = (Date.now() - parseInt(lastWithdraw)) / (3600 * 1000);
+        if (diff < 48) {
+          alert('You can only withdraw once every 48 hours. Next allowed in ' + Math.ceil(48 - diff) + ' hours.');
+          return;
+        }
+      }
+      const method = confirm('Pay in USDT (crypto)? Click OK for USDT, Cancel for INR (UPI)') ? 'USDT' : 'INR';
+      balance -= amt;
+      history.push({ type: 'Withdrawal', amount: '-$' + amt.toFixed(2), date: new Date().toISOString() });
+      localStorage.setItem('pepel_last_withdraw_' + workerId, Date.now());
+      updateUI();
+      addNotification('Withdrawal of $' + amt.toFixed(2) + ' requested via ' + method + '. Processing...');
+      alert('✅ Withdrawal requested! You\'ll receive within 24‑48 hours.');
+    }
+
+    submitBtn.addEventListener('click', submitTask);
+    answerInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') submitTask(); });
+    document.getElementById('withdrawBtn').addEventListener('click', requestWithdrawal);
+
+    updateUI();
+    fetchTask();
+    addNotification('Welcome to Pepel! Start solving tasks to earn.');
+    setInterval(updateUI, 10000);
+  </script>
+</body>
+</html>
