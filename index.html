@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pepel – Validate & Earn</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    .hero {
+      padding: 80px 0 100px;
+      background: linear-gradient(145deg, #fff7ed 0%, #fef3c7 100%);
+      text-align: center;
+    }
+    .hero h1 { font-size: 52px; font-weight: 800; color: #0f172a; }
+    .hero h1 span { color: var(--primary); }
+    .hero p { font-size: 20px; color: #475569; max-width: 600px; margin: 16px auto 32px; }
+    .trust-badges { display: flex; justify-content: center; gap: 40px; margin-top: 40px; flex-wrap: wrap; }
+    .trust-badges span { font-size: 14px; color: #475569; }
+    .trust-badges i { color: var(--primary); margin-right: 6px; }
+    .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; text-align: center; padding: 40px 0; }
+    .steps-grid .step i { font-size: 40px; color: var(--primary); margin-bottom: 12px; display: block; }
+    .steps-grid .step h3 { font-size: 18px; font-weight: 700; color: #0f172a; }
+    .steps-grid .step p { color: #64748b; font-size: 14px; }
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 32px; }
+      .hero { padding: 50px 0 60px; }
+      .trust-badges { gap: 16px; flex-direction: column; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <div class="logo">Pepel<span>.</span></div>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="login.html">Login</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="withdraw.html">Withdraw</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="login.html" class="btn-outline">Start Earning</a></li>
+      </ul>
+      <div class="menu-toggle" id="mobileMenu"><i class="fas fa-bars"></i></div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="container">
+      <h1>Validate. Earn. <span>Withdraw.</span></h1>
+      <p>Join thousands of data validators. Earn $0.03 per correct label – up to $80/day. No experience needed.</p>
+      <div class="btn-group">
+        <a href="login.html" class="btn-primary">Get Started Now</a>
+        <a href="faq.html" class="btn-secondary">Learn More</a>
+      </div>
+      <div class="trust-badges">
+        <span><i class="fas fa-check-circle"></i> 4.8/5 Rating</span>
+        <span><i class="fas fa-users"></i> 12,000+ Validators</span>
+        <span><i class="fas fa-clock"></i> 24/7 Support</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <h2 style="text-align:center; margin-bottom:40px; font-size:28px; font-weight:700;">How It Works</h2>
+      <div class="steps-grid">
+        <div class="step"><i class="fas fa-user-plus"></i><h3>1. Sign Up</h3><p>Get your unique Worker ID and Password.</p></div>
+        <div class="step"><i class="fas fa-image"></i><h3>2. Solve Labels</h3><p>View images, type the text, submit – each correct gives $0.03.</p></div>
+        <div class="step"><i class="fas fa-wallet"></i><h3>3. Withdraw</h3><p>Request payout via USDT or INR. Minimum $10, once per 48h.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 Pepel. All rights reserved.</p>
+      <p style="margin-top:8px;"><a href="mailto:support@pepel.com">support@pepel.com</a> | Telegram: @PepelBot</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    document.getElementById('mobileMenu').addEventListener('click', function() {
+      document.getElementById('navLinks').classList.toggle('active');
+    });
+  </script>
+</body>
+</html>
